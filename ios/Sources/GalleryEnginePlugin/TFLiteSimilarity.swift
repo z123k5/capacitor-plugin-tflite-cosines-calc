@@ -27,7 +27,7 @@ class TFLiteSimilarity {
 
         // 运行推理
         try interpreter.invoke()
-        try interpreter.copy(outputProbs, toInputAt: 0)
+        try interpreter.copy(Data(buffer: UnsafeBufferPointer(start: &outputProbs, count: outputProbs.count)), toInputAt: 0)
 
         return outputProbs
     }
