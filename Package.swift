@@ -11,6 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/ionic-team/capacitor-swift-pm.git", from: "7.0.0")
+        .package(url: "https://github.com/tensorflow/tensorflow", .upToNextMajor(from: "2.12.0"))
     ],
     targets: [
         .target(
