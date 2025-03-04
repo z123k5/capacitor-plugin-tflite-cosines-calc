@@ -5,13 +5,13 @@ import TensorFlowLite
 
 @objc(GalleryEnginePlugin)
 public class GalleryEnginePlugin: CAPPlugin {
-    public let identifier = "GalleryEnginePlugin"
-    public let jsName = "GalleryEngine"
-    public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "loadTensorFromDB", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "offloadTensor", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "calculateCosineSimilarity", returnType: CAPPluginReturnPromise)
-    ]
+    // public let identifier = "GalleryEnginePlugin"
+    // public let jsName = "GalleryEngine"
+    // public let pluginMethods: [CAPPluginMethod] = [
+    //     CAPPluginMethod(name: "loadTensorFromDB", returnType: CAPPluginReturnPromise),
+    //     CAPPluginMethod(name: "offloadTensor", returnType: CAPPluginReturnPromise),
+    //     CAPPluginMethod(name: "calculateCosineSimilarity", returnType: CAPPluginReturnPromise)
+    // ]
 
     private var db: OpaquePointer?
     private var similarity: TFLiteSimilarity?
