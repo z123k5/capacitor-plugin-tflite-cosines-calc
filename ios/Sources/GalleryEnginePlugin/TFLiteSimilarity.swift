@@ -19,24 +19,30 @@ class TFLiteSimilarity {
 
     func computeSimilarity(textFeatures: [Float], imageFeatures: [Float]) throws -> [Float] {
         let batchSize = imageFeatures.count / 768
-
-        // 重新调整输入大小
-        try interpreter.resizeInput(at: 1, to: [batchSize, 768])
+        
+        // 调整输入大小
+        try interpreter.resizeInput(at: 0, to: [1, 768]) // 假设 textFeatures 对应索引 0
+        try interpreter.resizeInput(at: 1, to: [batchSize, 768]) // 假设 imageFeatures 对应索引 1
         try interpreter.allocateTensors()
 
-        // 创建 TensorBuffer
-        let textTensor = try TensorBuffer(shape: [1, 768], data: textFeatures)
-        let imageTensor = try TensorBuffer(shape: [batchSize, 768], data: imageFeatures)
+        // 转换输入数据
+        let textData = Data(buffer: UnsafeBufferPointer(start: textFeatures, count: textFeatures.count))
+        let imageData = Data(buffer: UnsafeBufferPointer(start: imageFeatures, count: imageFeatures.count))
 
-        var outputProbs = [Float](repeating: 0.0, count: batchSize)
-        let outputs = [UnsafeMutableRawPointer(&outputProbs)]
+        // 复制数据到 TFLite 解释器
+        try interpreter.copy(textData, toInputAt: 0)
+        try interpreter.copy(imageData, toInputAt: 1)
 
         // 运行推理
         try interpreter.invoke()
-        try interpreter.copy(Data(buffer: UnsafeBufferPointer(start: &outputProbs, count: outputProbs.count)), toInputAt: 0)
+
+        // 获取输出
+        let outputTensor = try interpreter.output(at: 0) // 假设输出索引是 0
+        let outputProbs = outputTensor.data.toArray(type: Float.self)
 
         return outputProbs
     }
+
 }
 
 // TensorBuffer 辅助类
