@@ -37,10 +37,16 @@ class TFLiteSimilarity {
         try interpreter.invoke()
 
         // 获取输出
-        let outputTensor = try interpreter.output(at: 0) // 假设输出索引是 0
-        let outputProbs = outputTensor.data.toArray(type: Float.self)
-
-        return outputProbs
+        let outputTensor = try interpreter.output(at: 0)
+        
+        // 将 Data 转换为 [Float]
+        let outputSize = outputTensor.shape.dimensions.reduce(1, *)
+        let outputFloats: [Float] = outputTensor.data.withUnsafeBytes { rawBuffer in
+            let floatBuffer = rawBuffer.bindMemory(to: Float.self)
+            return Array(floatBuffer.prefix(outputSize))
+        }
+        
+        return outputFloats
     }
 
 }

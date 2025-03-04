@@ -103,7 +103,6 @@ public class GalleryEnginePlugin: CAPPlugin {
 
         do {
             let similarityScores = try similarity?.computeSimilarity(textFeatures: tensorData, imageFeatures: imageTensors) ?? []
-            CAPLog.print("Computed similarity scores of size: \(similarityScores.count)")
             call.resolve(["prob": similarityScores])
         } catch {
             call.reject("Error calculating cosine similarity", error.localizedDescription)
