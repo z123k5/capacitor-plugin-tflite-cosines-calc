@@ -5,8 +5,14 @@ class TFLiteSimilarity {
     private var interpreter: Interpreter
 
     init(modelName: String) throws {
-        guard let modelPath = Bundle.main.path(forResource: modelName, ofType: "tflite") else {
-            throw NSError(domain: "TFLite", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model not found"])
+//        guard let modelPath = Bundle.main.path(forResource: modelName, ofType: "tflite") else {
+//            throw NSError(domain: "TFLite", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model not found"])
+//        }
+        guard let bundleURL = Bundle(for: GalleryEnginePlugin.self).url(forResource: "podRes", withExtension: "bundle"),
+              let resourceBundle = Bundle(url: bundleURL),
+              let modelPath = resourceBundle.path(forResource: modelName, ofType: "tflite")
+        else {
+            throw NSError(domain: "TFLite", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model not found in bundle"])
         }
         interpreter = try Interpreter(modelPath: modelPath)
     }

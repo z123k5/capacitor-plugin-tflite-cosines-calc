@@ -5,14 +5,6 @@ import TensorFlowLite
 
 @objc(GalleryEnginePlugin)
 public class GalleryEnginePlugin: CAPPlugin {
-    // public let identifier = "GalleryEnginePlugin"
-    // public let jsName = "GalleryEngine"
-    // public let pluginMethods: [CAPPluginMethod] = [
-    //     CAPPluginMethod(name: "loadTensorFromDB", returnType: CAPPluginReturnPromise),
-    //     CAPPluginMethod(name: "offloadTensor", returnType: CAPPluginReturnPromise),
-    //     CAPPluginMethod(name: "calculateCosineSimilarity", returnType: CAPPluginReturnPromise)
-    // ]
-
     private var db: OpaquePointer?
     private var similarity: TFLiteSimilarity?
     private var imageTensors: [Float]?
@@ -33,12 +25,14 @@ public class GalleryEnginePlugin: CAPPlugin {
         CAPLog.print("Starting to load tensors from database")
         do {
             similarity = try TFLiteSimilarity(modelName: "similarity_model")
-            CAPLog.print("TFLiteSimilarity model initialized")
-
-            let dbPath = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!.appendingPathComponent("mediaSQLite.db").path
+            let dbPath = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
+                .first!
+                .appendingPathComponent("CapacitorDatabase")
+                .appendingPathComponent("mediaSQLite.db")
+                .path
             CAPLog.print("Database path: \(dbPath)")
 
-            if sqlite3_open(dbPath, &db) != SQLITE_OK {
+            if sqlite3_open_v2(dbPath, &db, SQLITE_OPEN_READWRITE, nil) != SQLITE_OK {
                 call.reject("Error opening database")
                 return
             }
@@ -78,8 +72,11 @@ public class GalleryEnginePlugin: CAPPlugin {
                 sqlite3_finalize(stmt)
                 call.resolve()
             } else {
+                if let errorMessage = sqlite3_errmsg(db) {
+                    let errorStr = String(cString: errorMessage)
+                    CAPLog.print("Failed to execute query " + errorStr)
+                }
                 call.reject("Query execution failed")
-                CAPLog.print("Failed to execute query")
             }
         } catch {
             call.reject("Error loading Tensor", error.localizedDescription)

@@ -15,4 +15,8 @@ Pod::Spec.new do |s|
   s.dependency 'Capacitor'
   s.dependency 'TensorFlowLiteSwift', '~> 2.17'
   s.swift_version = '5.1'
+  
+  s.resource_bundles = {
+      'podRes' => ['ios/Resources/*.tflite']
+    }
 end
