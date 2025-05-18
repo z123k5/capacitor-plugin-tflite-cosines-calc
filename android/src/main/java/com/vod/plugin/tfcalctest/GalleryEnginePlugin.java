@@ -35,10 +35,10 @@ public class GalleryEnginePlugin extends Plugin {
 
     @Override
     protected void handleOnDestroy() {
-        db.close();
-        similarity.close();
-        similarity = null;
-        imageTensors = null;
+//        db.close();
+//        similarity.close();
+//        similarity = null;
+//        imageTensors = null;
         super.handleOnDestroy();
     }
 

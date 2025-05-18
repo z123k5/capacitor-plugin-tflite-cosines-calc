@@ -34,7 +34,7 @@ public class TFLiteSimilarity {
         AssetFileDescriptor fileDescriptor = context.getAssets().openFd(modelPath);
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
-
+    
         // ✅ 使用 `map()` 加载模型
         long startOffset = fileDescriptor.getStartOffset();
         long declaredLength = fileDescriptor.getDeclaredLength();
